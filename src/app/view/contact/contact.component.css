@@ -1,0 +1,30 @@
+.formulario-contacto {
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 12px;
+}
+
+.formulario-contacto .form-control {
+    border-radius: 8px;
+}
+
+.formulario-contacto .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.formulario-contacto textarea {
+    resize: vertical;
+}
+
+.card {
+background-color: #f6f6f6;
+}
+
+.boton-enviar{
+background-color: #718fe2;
+}
+
+.titulo{
+    max-width: 900px;
+    margin: 0 auto;
+}

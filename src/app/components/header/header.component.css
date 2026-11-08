@@ -1,0 +1,10 @@
+.custom-nav-link {
+  display: inline-block !important;
+  width: max-content !important;
+}
+
+@media (min-width: 992px) {
+  .navbar-collapse {
+    border-top: none !important;
+  }
+}

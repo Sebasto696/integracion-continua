@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "titulo": "La institución fortalece sus programas de formación para el nuevo semestre",
+    "imagen": "assets/images/noticias/noticia-1.jpg",
+    "categoria": "Institucional",
+    "resumen": "La institución anunció nuevas estrategias académicas y de acompañamiento para estudiantes, con el objetivo de fortalecer su proceso de formación y mejorar la experiencia educativa."
+  },
+  {
+    "id": 2,
+    "titulo": "Estudiantes se destacan en jornada deportiva institucional",
+    "imagen": "assets/images/noticias/noticia-2.jpg",
+    "categoria": "Deportes",
+    "resumen": "La comunidad estudiantil participó en una jornada deportiva que reunió a diferentes equipos en actividades de fútbol, voleibol y baloncesto, promoviendo el bienestar y el trabajo en equipo."
+  },
+  {
+    "id": 3,
+    "titulo": "La cultura y el talento estudiantil se toman la institución",
+    "imagen": "assets/images/noticias/noticia-3.jpg",
+    "categoria": "Cultura",
+    "resumen": "Durante la semana cultural, estudiantes y docentes participaron en presentaciones artísticas, muestras musicales y actividades que resaltaron la diversidad y el talento de la comunidad."
+  },
+  {
+    "id": 4,
+    "titulo": "Nuevas herramientas tecnológicas fortalecen el aprendizaje",
+    "imagen": "assets/images/noticias/noticia-4.jpg",
+    "categoria": "Tecnología",
+    "resumen": "La institución incorporó nuevas herramientas digitales para apoyar los procesos académicos y facilitar el acceso de los estudiantes a recursos tecnológicos y educativos."
+  },
+  {
+    "id": 5,
+    "titulo": "La comunidad educativa participa en jornada de integración",
+    "imagen": "assets/images/noticias/noticia-5.jpg",
+    "categoria": "Institucional",
+    "resumen": "Docentes, estudiantes y colaboradores participaron en una jornada de integración diseñada para fortalecer la convivencia, el sentido de pertenencia y el trabajo colaborativo."
+  },
+  {
+    "id": 6,
+    "titulo": "Equipos institucionales avanzan en competencias deportivas",
+    "imagen": "assets/images/noticias/noticia-6.jpg",
+    "categoria": "Deportes",
+    "resumen": "Los equipos deportivos de la institución continúan su preparación para las próximas competencias, con entrenamientos enfocados en fortalecer el rendimiento y el espíritu deportivo."
+  },
+  {
+    "id": 7,
+    "titulo": "Estudiantes presentan proyectos en la muestra de innovación",
+    "imagen": "assets/images/noticias/noticia-7.jpg",
+    "categoria": "Cultura",
+    "resumen": "La muestra de innovación reunió diferentes proyectos desarrollados por estudiantes, quienes presentaron propuestas creativas orientadas a resolver necesidades de su entorno."
+  }
+]

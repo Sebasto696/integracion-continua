@@ -1,0 +1,30 @@
+<footer class="footer-custom text-white py-3 px-3" style="background-color: #7B92E5;">
+  <div class="container-fluid">
+    <div class="row align-items-center gy-3">
+      
+      <div class="col-12 col-md-3">
+        <h3 class="fw-bold mb-0 text-white">{{ title }}</h3>
+      </div>
+
+      <div class="col-12 col-md-5">
+        <ul class="list-unstyled d-flex flex-wrap gap-3 gap-md-4 mb-0">
+          <li *ngFor="let link of navLinks">
+            <a [routerLink]="link.path" class="text-white text-decoration-none small">
+              {{ link.label }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-12 col-md-4 text-md-end">
+        <p class="mb-1 fw-bold extra-small text-uppercase">
+          COPYRIGHT © {{ currentYear }} {{ appName }}
+        </p>
+        <p class="mb-0 extra-small opacity-75 leading-tight">
+          Prohibida su reproducción total o parcial, o su uso para el desarrollo de programas de inteligencia artificial o aprendizaje automático, así como su traducción a cualquier idioma, sin autorización escrita de su titular.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>

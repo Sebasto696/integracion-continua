@@ -1,0 +1,29 @@
+<div class="card h-100">
+  <div class="row g-0 h-100">
+    <div class="col-12 col-md-4">
+      <img
+        [src]="imagen"
+        class="img-fluid rounded-start h-100"
+        [alt]="titulo"
+      />
+    </div>
+    <div class="col-12 col-md-8">
+      <div class="card-body">
+        <h6 class="card-title">{{ titulo }}</h6>
+        <p class="card-text small">
+          {{ resumen }}
+          <a [routerLink]="['/detalle-noticia', id]" class="text-primary">Ver más</a>
+        </p>
+        <button
+          *ngIf="mostrarBotonDestacada"
+          type="button"
+          class="btn btn-sm btn-link text-warning p-0"
+          (click)="toggleDestacada.emit(id)"
+        >
+          <i class="bi" [class.bi-star-fill]="destacada" [class.bi-star]="!destacada"></i>
+          {{ destacada ? 'Desmarcar como destacada' : 'Marcar como destacada' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
