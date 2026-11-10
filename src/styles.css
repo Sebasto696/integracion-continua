@@ -1,7 +1,0 @@
-/* You can add global styles to this file, and also import other style files */
-:root{
-    --color-primario: #718fe2 ;
-    --color-secundario: #9e9e9e ;
-}
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
