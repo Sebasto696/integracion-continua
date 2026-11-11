@@ -1,0 +1,29 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f7;
+    margin: 0;
+    padding: 30px;
+}
+.container {
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+}
+label { display: block; margin-top: 15px; }
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    box-sizing: border-box;
+}
+button {
+    margin-top: 20px;
+    padding: 11px 20px;
+    cursor: pointer;
+}
+table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+.success { color: green; }
+.error { color: red; }
