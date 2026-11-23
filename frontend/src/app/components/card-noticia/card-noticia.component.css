@@ -1,0 +1,11 @@
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .card img {
+    height: 100%;
+    object-fit: cover;
+  }
+}

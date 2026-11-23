@@ -5,82 +5,26 @@ from urllib.parse import urlparse
 
 import psycopg2
 from psycopg2.errors import ForeignKeyViolation, UniqueViolation
-from flask import Flask, flash, jsonify, redirect, render_template, request
+from flask import Flask, jsonify, request, send_from_directory
+from werkzeug.utils import safe_join
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=None)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
 
-COLUMNAS_NOTICIA = "id, titulo, contenido, imagen_url, autor_id, fecha_publicacion, destacado"
+CARPETA_FRONTEND = os.path.join(app.root_path, "static")
+COLUMNAS_NOTICIA = "id, titulo, contenido, imagen_url, categoria, autor_id, fecha_publicacion, destacado"
+CATEGORIAS_NOTICIA = ("Institucional", "Deportes", "Cultura", "Tecnología")
 MAX_ENTERO_BD = 2147483647
 PATRON_USUARIO = r"[A-Za-z0-9_.-]{3,50}"
+PATRON_IMAGEN_LOCAL = r"assets/[A-Za-z0-9_-]+(?:[./][A-Za-z0-9_-]+)*"
 
 def conectar_bd():
     return psycopg2.connect(
         host=os.environ["DB_HOST"],
         dbname=os.environ["DB_NAME"],
         user=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"]
+        password=os.environ["DB_PASSWORD"],
     )
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        nombre = request.form.get("nombre_completo", "").strip()
-        usuario = request.form.get("nombre_usuario", "").strip()
-
-        if not nombre or not usuario or len(nombre) > 120:
-            flash("Verifica los datos ingresados.", "error")
-            return redirect("/")
-
-        if not re.fullmatch(PATRON_USUARIO, usuario):
-            flash("El usuario debe tener entre 3 y 50 caracteres alfanumericos, puntos, guiones o guiones bajos.", "error")
-            return redirect("/")
-
-        try:
-            with closing(conectar_bd()) as conn:
-                with conn:
-                    with conn.cursor() as cur:
-                        cur.execute(
-                            """INSERT INTO usuarios
-                               (nombre_completo, nombre_usuario)
-                               VALUES (%s, %s)""",
-                            (nombre, usuario)
-                        )
-            flash("Usuario registrado correctamente.", "success")
-
-        except UniqueViolation:
-            flash("Ese nombre de usuario ya existe.", "error")
-
-        except psycopg2.Error:
-            app.logger.exception("Error al guardar el usuario")
-            flash("No fue posible conectar con la base de datos.", "error")
-
-        return redirect("/")
-
-    try:
-        with closing(conectar_bd()) as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT id, nombre_completo, nombre_usuario FROM usuarios ORDER BY id"
-                )
-                usuarios = cur.fetchall()
-
-        return render_template("index.html", usuarios=usuarios)
-
-    except psycopg2.Error:
-        app.logger.exception("Error consultando usuarios")
-        return "No fue posible consultar la base de datos.", 503
-
-def noticia_a_json(fila):
-    return {
-        "id": fila[0],
-        "titulo": fila[1],
-        "contenido": fila[2],
-        "imagen_url": fila[3],
-        "autor_id": fila[4],
-        "fecha_publicacion": fila[5].isoformat(),
-        "destacado": fila[6]
-    }
 
 def error_json(mensaje, estado):
     return jsonify(error=mensaje), estado
@@ -154,9 +98,24 @@ def crear_usuario():
         app.logger.exception("Error al guardar el usuario")
         return error_json("No fue posible guardar el usuario.", 503)
 
-def url_valida(url):
+def noticia_a_json(fila):
+    return {
+        "id": fila[0],
+        "titulo": fila[1],
+        "contenido": fila[2],
+        "imagen_url": fila[3],
+        "categoria": fila[4],
+        "autor_id": fila[5],
+        "fecha_publicacion": fila[6].isoformat(),
+        "destacado": fila[7]
+    }
+
+def imagen_valida(imagen):
+    if re.fullmatch(PATRON_IMAGEN_LOCAL, imagen):
+        return True
+
     try:
-        partes = urlparse(url)
+        partes = urlparse(imagen)
     except ValueError:
         return False
     return partes.scheme in ("http", "https") and bool(partes.netloc)
@@ -168,6 +127,7 @@ def validar_noticia(datos):
     titulo = datos.get("titulo")
     contenido = datos.get("contenido")
     imagen_url = datos.get("imagen_url")
+    categoria = datos.get("categoria")
     autor_id = datos.get("autor_id")
 
     if not isinstance(titulo, str) or not titulo.strip() or len(titulo.strip()) > 200:
@@ -176,16 +136,22 @@ def validar_noticia(datos):
     if not isinstance(contenido, str) or not contenido.strip():
         return None, "El contenido es obligatorio."
 
+    if categoria not in CATEGORIAS_NOTICIA:
+        return None, "Selecciona una categoria valida."
+
+    if isinstance(imagen_url, str):
+        imagen_url = imagen_url.strip()
+
     if imagen_url == "":
         imagen_url = None
 
-    if imagen_url is not None and (not isinstance(imagen_url, str) or not url_valida(imagen_url)):
-        return None, "La imagen debe ser una URL http o https."
+    if imagen_url is not None and (not isinstance(imagen_url, str) or not imagen_valida(imagen_url)):
+        return None, "La imagen debe ser una URL http o https, o una ruta dentro de assets/."
 
-    if type(autor_id) is not int or not 1 <= autor_id <= MAX_ENTERO_BD:
+    if autor_id is not None and (type(autor_id) is not int or not 1 <= autor_id <= MAX_ENTERO_BD):
         return None, "El autor_id debe ser un numero entero valido."
 
-    return (titulo.strip(), contenido.strip(), imagen_url, autor_id), None
+    return (titulo.strip(), contenido.strip(), imagen_url, categoria, autor_id), None
 
 @app.route("/api/noticias", methods=["GET"])
 def listar_noticias():
@@ -203,6 +169,26 @@ def listar_noticias():
         app.logger.exception("Error consultando noticias")
         return error_json("No fue posible consultar la base de datos.", 503)
 
+@app.route("/api/noticias/<int:noticia_id>", methods=["GET"])
+def obtener_noticia(noticia_id):
+    try:
+        with closing(conectar_bd()) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    f"SELECT {COLUMNAS_NOTICIA} FROM noticias WHERE id = %s",
+                    (noticia_id,)
+                )
+                noticia = cur.fetchone()
+
+        if noticia is None:
+            return error_json("La noticia no existe.", 404)
+
+        return jsonify(noticia_a_json(noticia))
+
+    except psycopg2.Error:
+        app.logger.exception("Error consultando la noticia")
+        return error_json("No fue posible consultar la base de datos.", 503)
+
 @app.route("/api/noticias", methods=["POST"])
 def crear_noticia():
     valores, error = validar_noticia(request.get_json(silent=True))
@@ -215,8 +201,8 @@ def crear_noticia():
                 with conn.cursor() as cur:
                     cur.execute(
                         f"""INSERT INTO noticias
-                            (titulo, contenido, imagen_url, autor_id)
-                            VALUES (%s, %s, %s, %s)
+                            (titulo, contenido, imagen_url, categoria, autor_id)
+                            VALUES (%s, %s, %s, %s, %s)
                             RETURNING {COLUMNAS_NOTICIA}""",
                         valores
                     )
@@ -233,6 +219,57 @@ def crear_noticia():
     except psycopg2.Error:
         app.logger.exception("Error al guardar la noticia")
         return error_json("No fue posible guardar la noticia.", 503)
+
+@app.route("/api/noticias/<int:noticia_id>", methods=["PUT"])
+def actualizar_noticia(noticia_id):
+    valores, error = validar_noticia(request.get_json(silent=True))
+    if error:
+        return error_json(error, 400)
+
+    titulo, contenido, imagen_url, categoria, _ = valores
+
+    try:
+        with closing(conectar_bd()) as conn:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        f"""UPDATE noticias
+                            SET titulo = %s, contenido = %s, imagen_url = %s, categoria = %s
+                            WHERE id = %s
+                            RETURNING {COLUMNAS_NOTICIA}""",
+                        (titulo, contenido, imagen_url, categoria, noticia_id)
+                    )
+                    noticia = cur.fetchone()
+
+        if noticia is None:
+            return error_json("La noticia no existe.", 404)
+
+        return jsonify(noticia_a_json(noticia))
+
+    except ValueError:
+        return error_json("El texto contiene caracteres no validos.", 400)
+
+    except psycopg2.Error:
+        app.logger.exception("Error al actualizar la noticia")
+        return error_json("No fue posible actualizar la noticia.", 503)
+
+@app.route("/api/noticias/<int:noticia_id>", methods=["DELETE"])
+def eliminar_noticia(noticia_id):
+    try:
+        with closing(conectar_bd()) as conn:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute("DELETE FROM noticias WHERE id = %s RETURNING id", (noticia_id,))
+                    eliminada = cur.fetchone()
+
+        if eliminada is None:
+            return error_json("La noticia no existe.", 404)
+
+        return "", 204
+
+    except psycopg2.Error:
+        app.logger.exception("Error al eliminar la noticia")
+        return error_json("No fue posible eliminar la noticia.", 503)
 
 @app.route("/api/noticias/<int:noticia_id>/destacado", methods=["PATCH"])
 def cambiar_destacado(noticia_id):
@@ -260,3 +297,18 @@ def cambiar_destacado(noticia_id):
     except psycopg2.Error:
         app.logger.exception("Error al actualizar la noticia")
         return error_json("No fue posible actualizar la noticia.", 503)
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def servir_frontend(path):
+    if path == "api" or path.startswith("api/"):
+        return error_json("Ruta no encontrada.", 404)
+
+    archivo = safe_join(CARPETA_FRONTEND, path) if path else None
+    if archivo and os.path.isfile(archivo):
+        return send_from_directory(CARPETA_FRONTEND, path)
+
+    if "." in path.rsplit("/", 1)[-1]:
+        return "Archivo no encontrado.", 404
+
+    return send_from_directory(CARPETA_FRONTEND, "index.html")

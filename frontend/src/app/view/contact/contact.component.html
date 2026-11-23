@@ -1,0 +1,208 @@
+<title>Contactanos</title>
+
+<div class="container my-4">
+  <div class="titulo px-3">
+    <h3 style="color: #0d6efd">Contactanos</h3>
+    <p>
+      Si deseas comunicarte con nosotros, diligencia el siguiente formulario
+    </p>
+  </div>
+
+  <div class="card shadow-sm formulario-contacto mx-2 mx-md-auto">
+    <div class="card-body p-3 p-md-4">
+      <h4 style="color: gray">Formulario</h4>
+
+      <form [formGroup]="contactForm" (ngSubmit)="sendingOfInformation()" class="my-4">
+
+        <!-- NOMBRE Y APELLIDO -->
+        <div class="row">
+
+          <div class="col-12 col-md-6 mb-3">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Nombre..."
+                formControlName="nombre"
+                [class.is-invalid]="contactForm.get('nombre')?.invalid && contactForm.get('nombre')?.touched"
+              />
+
+            @if (contactForm.get('nombre')?.touched && contactForm.get('nombre')?.hasError('required')) {
+              <small class="text-danger">El nombre es obligatorio.</small>
+            }
+
+            @if (contactForm.get('nombre')?.touched && contactForm.get('nombre')?.hasError('pattern')) {
+              <small class="text-danger">El nombre solo debe contener letras.</small>
+            }
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Apellido..."
+                formControlName="apellido"
+                [class.is-invalid]="contactForm.get('apellido')?.invalid && contactForm.get('apellido')?.touched"
+              />
+            @if (contactForm.get('apellido')?.touched && contactForm.get('apellido')?.hasError('required')) {
+              <small class="text-danger">El apellido es obligatorio.</small>
+            }
+
+            @if (contactForm.get('apellido')?.touched && contactForm.get('apellido')?.hasError('pattern')) {
+              <small class="text-danger">El apellido solo debe contener letras.</small>
+            }
+          </div>
+
+        </div>
+
+        <!-- DIRECCIÓN, MUNICIPIO Y DEPARTAMENTO -->
+        <div class="row">
+
+          <div class="col-12 col-md-4 mb-3">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Dirección..."
+                formControlName="direccion"
+                [class.is-invalid]="contactForm.get('direccion')?.invalid && contactForm.get('direccion')?.touched"
+              />
+
+            @if (contactForm.get('direccion')?.touched && contactForm.get('direccion')?.hasError('required')) {
+              <small class="text-danger">La dirección es obligatoria.</small>
+            }
+
+            @if (contactForm.get('direccion')?.touched && contactForm.get('direccion')?.hasError('minlength')) {
+              <small class="text-danger">Ingresa una dirección válida.</small>
+            }
+          </div>
+
+          <div class="col-12 col-md-4 mb-3">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Municipio..."
+                formControlName="municipio"
+                [class.is-invalid]="contactForm.get('municipio')?.invalid && contactForm.get('municipio')?.touched"
+              />
+
+            @if (contactForm.get('municipio')?.touched && contactForm.get('municipio')?.hasError('required')) {
+              <small class="text-danger">El municipio es obligatorio.</small>
+            }
+
+            @if (contactForm.get('municipio')?.touched && contactForm.get('municipio')?.hasError('pattern')) {
+              <small class="text-danger">Ingresa un municipio válido.</small>
+            }
+          </div>
+
+          <div class="col-12 col-md-4 mb-3">
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Departamento..."
+                formControlName="departamento"
+                [class.is-invalid]="contactForm.get('departamento')?.invalid && contactForm.get('departamento')?.touched"
+              />
+
+            @if (contactForm.get('departamento')?.touched && contactForm.get('departamento')?.hasError('required')) {
+              <small class="text-danger">El departamento es obligatorio.</small>
+            }
+
+            @if (contactForm.get('departamento')?.touched && contactForm.get('departamento')?.hasError('pattern')) {
+              <small class="text-danger">Ingresa un departamento válido.</small>
+            }
+          </div>
+
+        </div>
+
+        <!-- CORREO ELECTRÓNICO -->
+        <div class="row">
+
+          <div class="col-12 col-md-6 mb-3">
+              <input
+                class="form-control"
+                type="email"
+                placeholder="Correo electrónico..."
+                formControlName="correo"
+                [class.is-invalid]="contactForm.get('correo')?.invalid && contactForm.get('correo')?.touched"
+              />
+
+            @if (contactForm.get('correo')?.touched && contactForm.get('correo')?.hasError('required')) {
+              <small class="text-danger">El correo electrónico es obligatorio.</small>
+            }
+
+            @if (contactForm.get('correo')?.touched && contactForm.get('correo')?.hasError('email')) {
+              <small class="text-danger">Ingresa un correo electrónico válido.</small>
+            }
+          </div>
+
+          <div class="col-12 col-md-6 mb-3">
+              <input
+                class="form-control"
+                type="email"
+                placeholder="Confirmar correo..."
+                formControlName="confirmarCorreo"
+                [class.is-invalid]="contactForm.get('confirmarCorreo')?.invalid && contactForm.get('confirmarCorreo')?.touched"
+                [class.is-invalid]="(contactForm.get('confirmarCorreo')?.invalid || contactForm.hasError('emailsNotMatch')) && contactForm.get('confirmarCorreo')?.touched"
+              />
+
+            @if (contactForm.get('confirmarCorreo')?.touched && contactForm.get('confirmarCorreo')?.hasError('required')) {
+              <small class="text-danger">Debes confirmar tu correo.</small>
+            }
+
+            @if (contactForm.get('confirmarCorreo')?.touched && contactForm.get('confirmarCorreo')?.hasError('email')) {
+              <small class="text-danger">Ingresa un correo válido.</small>
+            }
+
+            @if (contactForm.get('confirmarCorreo')?.touched && contactForm.hasError('emailsNotMatch')) {
+              <small class="text-danger">Los correos electrónicos no coinciden.</small>
+            }
+          </div>
+
+        </div>
+
+        <!-- MENSAJE -->
+        <div class="mb-3">
+            <textarea
+              class="form-control"
+              rows="5"
+              placeholder="Escribe aquí un mensaje para nosotros..."
+              formControlName="mensaje"
+              [class.is-invalid]="contactForm.get('mensaje')?.invalid && contactForm.get('mensaje')?.touched"
+            ></textarea>
+
+
+          @if (contactForm.get('mensaje')?.touched && contactForm.get('mensaje')?.hasError('required')) {
+            <small class="text-danger">El mensaje es obligatorio.</small>
+          }
+
+          @if (contactForm.get('mensaje')?.touched && contactForm.get('mensaje')?.hasError('minlength')) {
+            <small class="text-danger">El mensaje debe tener mínimo 10 caracteres.</small>
+          }
+
+          @if (contactForm.get('mensaje')?.touched && contactForm.get('mensaje')?.hasError('maxlength')) {
+            <small class="text-danger">El mensaje no puede superar los 500 caracteres.</small>
+          }
+        </div>
+
+        <!-- BOTONES -->
+        <div class="d-flex flex-column flex-md-row justify-content-start gap-2">
+
+          <button
+            type="submit"
+            class="btn btn-primary boton-enviar mb-2 mb-md-0"
+            [disabled]="contactForm.invalid">
+            Enviar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="clearForm()">
+            Limpiar
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

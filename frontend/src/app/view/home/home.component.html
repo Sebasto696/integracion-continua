@@ -1,0 +1,188 @@
+<div class="container-fluid p-0">
+  <div
+    id="heroCarousel"
+    class="carousel slide hero-section position-relative"
+    data-bs-ride="carousel"
+  >
+    <div class="carousel-inner h-100">
+
+      <div class="carousel-item active h-100">
+        <div class="hero-overlay d-flex align-items-center text-center text-md-start">
+          <div class="container text-white">
+            <div class="col-12 col-md-8 col-lg-5 px-3 px-md-0 text-content">
+              <h1 class="titulo_carrusel fst-italic fw-bold ps-3">Bienvenido</h1>
+              <p class="fs-6 fs-md-5 p-2 p-md-3">
+                [Nombre de la editorial] está para usted siempre<br />
+                Para informarle los últimos acontecimientos
+              </p>
+            </div>
+          </div>
+          <img
+            src="assets/images/noticias/noticia-1.jpg"
+            class="hero-bg-img"
+            alt="Imagen importante"
+          />
+        </div>
+      </div>
+      <div class="carousel-item h-100">
+        <div class="hero-overlay d-flex align-items-center text-center text-md-start">
+          <div class="container text-white">
+            <div class="col-12 col-md-8 col-lg-5 px-3 px-md-0 text-content">
+              <h1 class="titulo_carrusel fst-italic fw-bold ps-3">Bienvenido</h1>
+              <p class="fs-6 fs-md-5 p-2 p-md-3">
+                [Nombre de la editorial] está para usted siempre<br />
+                Para informarle los últimos acontecimientos
+              </p>
+            </div>
+          </div>
+          <img
+            src="assets/images/noticias/noticia-2.jpg"
+            class="hero-bg-img"
+            alt="Imagen importante"
+          />
+        </div>
+      </div>
+      <div class="carousel-item h-100">
+        <div class="hero-overlay d-flex align-items-center text-center text-md-start">
+          <div class="container text-white">
+            <div class="col-12 col-md-8 col-lg-5 px-3 px-md-0 text-content">
+              <h1 class="titulo_carrusel fst-italic fw-bold ps-3">Bienvenido</h1>
+              <p class="fs-6 fs-md-5 p-2 p-md-3">
+                [Nombre de la editorial] está para usted siempre<br />
+                Para informarle los últimos acontecimientos
+              </p>
+            </div>
+          </div>
+          <img
+            src="assets/images/noticias/noticia-3.jpg"
+            class="hero-bg-img"
+            alt="Imagen importante"
+          />
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#heroCarousel"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Anterior</span>
+    </button>
+
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#heroCarousel"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Siguiente</span>
+    </button>
+
+    <div class="carousel-indicators">
+      <button
+        type="button"
+        data-bs-target="#heroCarousel"
+        data-bs-slide-to="0"
+        class="active"
+      ></button>
+      <button
+        type="button"
+        data-bs-target="#heroCarousel"
+        data-bs-slide-to="1"
+      ></button>
+      <button
+        type="button"
+        data-bs-target="#heroCarousel"
+        data-bs-slide-to="2"
+      ></button>
+    </div>
+  </div>
+
+  <div class="container my-5" *ngIf="noticiaPrincipal">
+    <div class="row align-items-stretch">
+      <div class="col-lg-6 mb-lg-0 pe-lg-4 border-end-lg border-muted">
+        <div class="card border-0 h-100">
+          <img
+            [src]="noticiaPrincipal.imagen"
+            class="card-img-top news-main-img"
+            [alt]="noticiaPrincipal.titulo"
+          />
+          <div class="card-body text-center pt-4">
+            <h3 class="card-title fw-bold mb-3">
+              [{{ noticiaPrincipal.titulo }}]
+            </h3>
+            <p class="card-text text-muted">
+              {{ noticiaPrincipal.resumen }}
+              <a [routerLink]="['/detalle-noticia', noticiaPrincipal.id]" class="text-primary text-decoration-underline ms-1"
+                >Ver más</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 d-lg-none my-2">
+        <hr class="text-muted">
+      </div>
+
+      <div class="col-lg-6 ps-lg-4">
+        <div class="d-flex flex-column gap-3">
+          <div
+            *ngFor="let noticia of noticiasSecundarias"
+            class="card border mb-2"
+          >
+            <div class="row g-0 align-items-center">
+              <div class="col-md-5 news-image-container">
+                <img
+                  [src]="noticia.imagen"
+                  class="img-fluid rounded-start news-side-img"
+                  [alt]="noticia.titulo"
+                />
+              </div>
+
+              <div class="col-md-7">
+                <div class="card-body p-2 p-md-3">
+                  <h6 class="card-title fw-bold mb-2">
+                    {{ noticia.titulo }}
+                  </h6>
+
+                  <p class="card-text small text-muted mb-0">
+                    {{ noticia.resumen }}
+                    <a
+                      [routerLink]="['/detalle-noticia', noticia.id]"
+                      class="text-primary text-decoration-underline ms-1"
+                    >
+                      Ver más
+                    </a>
+                  </p>
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-link text-warning p-0 mt-1"
+                    (click)="onToggleDestacada(noticia.id)"
+                  >
+                    Desmarcar como destacada
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5 pt-4 border-top">
+      <p class="fst-italic fw-bold fs-5 text-secondary mb-3">
+        Si te interesa nuestro contenido, únete a nosotros y recibe las noticias
+        tan pronto salen
+      </p>
+      <button class="btn btn-outline-primary rounded-pill px-4">
+        Únete a nosotros
+      </button>
+    </div>
+  </div>
+</div>
