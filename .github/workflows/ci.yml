@@ -1,4 +1,4 @@
-name: Integración Continua Angular
+name: Integración Continua
 
 on:
   push:
@@ -11,17 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Descargar el código
-      uses: actions/checkout@v4
+      - name: Descargar el código
+        uses: actions/checkout@v4
 
-    - name: Configurar Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: app/requirements.txt
 
-    - name: Instalar dependencias
-      run: npm install
+      - name: Instalar dependencias de Python
+        working-directory: app
+        run: pip install -r requirements.txt
+        
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Construir el proyecto (Build)
-      run: npm run build --if-present
+      - name: Construir imagen Docker de app
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          push: false
