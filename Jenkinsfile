@@ -1,4 +1,3 @@
-// Prueba de integración continua
 pipeline {
     agent any
 
@@ -10,6 +9,15 @@ pipeline {
         stage('Descargar codigo') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Compilar frontend Angular') {
+            steps {
+                dir('frontend') {
+                    sh 'npm ci'
+                    sh 'npm run build'
+                }
             }
         }
 
