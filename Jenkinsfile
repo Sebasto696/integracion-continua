@@ -1,3 +1,4 @@
+// Prueba de integración continua
 pipeline {
     agent any
 
